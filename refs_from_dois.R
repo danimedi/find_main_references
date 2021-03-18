@@ -13,8 +13,10 @@
 #' @examples
 #' 
 refs_from_dois <- function(dois, format = "text") {
-  refs <- rcrossref::cr_cn(dois = dois, format = format)
-  refs <- unlist(refs)
-  refs <- refs[!is.na(refs)]
-  refs
+  results <- purrr::map(dois, function(doi) {
+    opcit <- paste0("https://opencitations.net/index/coci/api/v1/citations/", doi)
+    result <- rjson::fromJSON(file = opcit)
+    purrr::map_chr(result, "citing")
+  })
+  results
 }
