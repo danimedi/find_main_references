@@ -9,7 +9,7 @@ Also filter or find the way of just including the most recent articles
 
 ```{r}
 library(RISmed)
-search_query <- EUtilsSummary(search_topic, retmax = 50)
+search_query <- EUtilsSummary("gastritis", retmax = 50)
 medline_object <- EUtilsGet(search_query)
 pmid <- ArticleId(medline_object)
 ```
@@ -33,7 +33,7 @@ library(xml2)
 library(purrr)
 
 res <- map(pmid, function(id) {
-  Sys.sleep(1/3)
+  Sys.sleep(1/5)
   base <- "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
   db <- "pubmed"
   url <- paste0(
@@ -47,7 +47,6 @@ res <- map(pmid, function(id) {
     xml_text()
   links
 })
-
 ```
 
 ```{r}
