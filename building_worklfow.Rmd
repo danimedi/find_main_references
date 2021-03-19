@@ -89,7 +89,7 @@ refs_to_freqs <- function(refs) {
 ## Obtain the name of the article from PMID
 
 ```{r}
-medline_object <- EUtilsGet("1458460")
+medline_object <- EUtilsGet("30893536")
 ArticleTitle(medline_object)
 ```
 
