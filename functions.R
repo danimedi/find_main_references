@@ -4,6 +4,7 @@ library(glue)
 library(purrr)
 library(magrittr)
 library(xml2)
+library(tibble)
 
 
 
@@ -45,6 +46,16 @@ refs_to_freqs <- function(refs) {
     table() %>% 
     sort(decreasing = TRUE) %>% 
     .[. > 1]
-  if (length(freqs) > 0) freqs else "There is not enough information to suggest any specific articles"
+  table_results <- tibble(PMID = names(freqs), n = unname(freqs))
+  if (length(freqs) > 0) table_results else "There is not enough information to suggest any specific articles"
+}
+
+
+
+pmid_to_article <- function(pmid) {
+  # obtain the titles for the PMIDs
+  query <- paste0(pmid, collapse = "[PMID] OR ")
+  query <- paste0(query, "[PMID]")
+  ArticleTitle(EUtilsGet(query))
 }
 
