@@ -19,7 +19,8 @@ server <- function(input, output, session) {
       refs_to_freqs()
   })
   
-  output$table <- renderTable(tibble(result(), Article = pmid_to_article(result()$PMID)))
+  output$table <- renderTable(tibble(result(), Article = pmid_to_article(result()$PMID),
+                                     Link = paste0("https://pubmed.ncbi.nlm.nih.gov/", PMID)))
   
 }
 
