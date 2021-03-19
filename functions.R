@@ -40,7 +40,7 @@ pmid_to_refs <- function(pmid) {
 refs_to_freqs <- function(refs) {
   # collapse all the PMIDs of the references and detect the repeated PMIDs, return those repeated codes,
   # they contain the "important" articles of the search
-  freqs <- res %>% 
+  freqs <- refs %>% 
     unlist() %>% 
     table() %>% 
     sort(decreasing = TRUE) %>% 
