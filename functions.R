@@ -20,6 +20,7 @@ query_to_pmid <- function(query, limit = 50, days_before = 365) {
 pmid_to_refs <- function(pmid) {
   # obtain the PMIDs of the references from a list of PMIDs
   map(pmid, function(id) {
+    Sys.sleep(1/5)
     base <- "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
     db <- "pubmed"
     url <- paste0(
