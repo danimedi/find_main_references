@@ -1,22 +1,26 @@
 library(shiny)
 
+source("functions.R")
+
 ui <- fluidPage(
   textInput("query", "Search"),
-  numericInput("limit", "Limit of articles", value = 2),
-  textInput("api", "API key (optional)"),
+  numericInput("limit", "Limit of articles", value = 50),
+  numericInput("days_before", "Within the specified number of days", value = 365),
   actionButton("button_search", "Search!"),
   textOutput("articles")
 )
 
 server <- function(input, output, session) {
-  dois <- eventReactive(
-    input$button_search, 
-    dois_from_query(input$query, limit = input$limit, 
-                    api_key = if (input$api == "") NULL else input$api)
-  )
-  refs <- reactive(refs_from_dois(dois()))
+  
+  result <- eventReactive(input$button_search, {
+    input$query %>% 
+      query_to_pmid(limit = input$limit, days_before = input$days_before) %>% 
+      pmid_to_refs() %>% 
+      refs_to_freqs()
+  })
 
-  output$articles <- renderText(refs(), sep = "")
+  output$articles <- renderText(result())
+  
 }
 
 shinyApp(ui, server)
