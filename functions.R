@@ -3,10 +3,11 @@ library(httr)
 library(magrittr)
 library(xml2)
 library(tibble)
+library(stringr)
 
 
 
-query_to_pmid <- function(query, limit = 50, days_before = 365) {
+query_to_pmid <- function(query, limit = 100, days_before = 365) {
   # use RISmed package to obtain the PMIDs of the search query
   search_query <- EUtilsSummary(query, retmax = limit, reldate = days_before)
   medline_object <- EUtilsGet(search_query)
@@ -18,8 +19,8 @@ query_to_pmid <- function(query, limit = 50, days_before = 365) {
 pmid_to_refs <- function(pmid) {
   # obtain the PMIDs of the references from a list of PMIDs
   base <- "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
-  url_id <- paste0("&id=", paste0(pmid, collapse = "&id="))
-  url <- paste0(
+  url_id <- str_c("&id=", str_c(pmid, collapse = "&id="))
+  url <- str_c(
     base,
     "elink.fcgi?dbfrom='pubmed'&linkname=pubmed_pubmed_refs",
     url_id
