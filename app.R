@@ -1,4 +1,5 @@
 library(shiny)
+library(shinycssloaders)
 
 source("functions.R")
 
@@ -7,7 +8,7 @@ ui <- fluidPage(
   numericInput("limit", "Limit of articles", value = 100),
   numericInput("days_before", "Within the specified number of days", value = 365),
   actionButton("button_search", "Search!"),
-  tableOutput("table")
+  tableOutput("table") %>% withSpinner()
 )
 
 server <- function(input, output, session) {
@@ -19,8 +20,14 @@ server <- function(input, output, session) {
       refs_to_freqs()
   })
   
-  output$table <- renderTable(tibble(result(), Article = pmid_to_article(result()$PMID),
-                                     Link = paste0("https://pubmed.ncbi.nlm.nih.gov/", PMID)))
+  output$table <- renderTable({
+    if (!is.null(dim(result()))) {
+      tibble(result(), Article = pmid_to_article(result()$PMID),
+             Link = paste0("https://pubmed.ncbi.nlm.nih.gov/", PMID))
+    } else {
+      "Not enough information, you could try more specific search terms"
+    }
+  })
   
 }
 
