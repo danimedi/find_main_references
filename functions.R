@@ -43,7 +43,7 @@ refs_to_freqs <- function(pmid) {
   if (length(freq) > 0) {
     table_results
   } else {
-    "There is not enough information to suggest any specific articles"
+    validate("There is not enough information to suggest any specific articles")
   }
 }
 

@@ -21,12 +21,8 @@ server <- function(input, output, session) {
   })
   
   output$table <- renderTable({
-    if (!is.null(dim(result()))) {
-      tibble(result(), Article = pmid_to_article(result()$PMID),
-             Link = paste0("https://pubmed.ncbi.nlm.nih.gov/", PMID))
-    } else {
-      "Not enough information, you could try more specific search terms"
-    }
+    tibble(result(), Article = pmid_to_article(result()$PMID),
+           Link = paste0("https://pubmed.ncbi.nlm.nih.gov/", PMID))
   })
   
 }
