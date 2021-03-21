@@ -1,7 +1,5 @@
 library(RISmed)
 library(httr)
-library(glue)
-library(purrr)
 library(magrittr)
 library(xml2)
 library(tibble)
@@ -19,21 +17,19 @@ query_to_pmid <- function(query, limit = 50, days_before = 365) {
 
 pmid_to_refs <- function(pmid) {
   # obtain the PMIDs of the references from a list of PMIDs
-  map(pmid, function(id) {
-    Sys.sleep(1/4)
-    base <- "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
-    db <- "pubmed"
-    url <- paste0(
-      base,
-      glue("elink.fcgi?dbfrom={db}&linkname=pubmed_pubmed_refs&id={id}")
-    )
-    output <- GET(url)
-    links <- content(output) %>% 
-      xml_contents() %>% 
-      xml_find_all("//LinkSetDb/Link") %>% 
-      xml_text()
-    links
-  })
+  base <- "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
+  url_id <- paste0("&id=", paste0(pmid, collapse = "&id="))
+  url <- paste0(
+    base,
+    "elink.fcgi?dbfrom='pubmed'&linkname=pubmed_pubmed_refs",
+    url_id
+  )
+  output <- GET(url)
+  links <- content(output) %>% 
+    xml_contents() %>% 
+    xml_find_all("//LinkSetDb/Link") %>% 
+    xml_text()
+  links
 }
 
 
