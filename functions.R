@@ -6,6 +6,14 @@ library(tibble)
 library(stringr)
 
 
+# analysis of perfomance showed:
+# expensive "base" functions:
+# EUtilsGet x2
+# expensive created functions:
+# 1. pmid_to_article
+# 2. query_to_pmid
+# 3. pmid_to_refs
+
 
 query_to_pmid <- function(query, limit = 100, days_before = 365) {
   # use RISmed package to obtain the PMIDs of the search query
