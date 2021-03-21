@@ -25,25 +25,26 @@ pmid_to_refs <- function(pmid) {
     url_id
   )
   output <- GET(url)
-  links <- content(output) %>% 
+  res <- content(output) %>% 
     xml_contents() %>% 
     xml_find_all("//LinkSetDb/Link") %>% 
     xml_text()
-  links
+  res
 }
 
 
 
-refs_to_freqs <- function(refs) {
-  # collapse all the PMIDs of the references and detect the repeated PMIDs, return those repeated codes,
-  # they contain the "important" articles of the search
-  freqs <- refs %>% 
-    unlist() %>% 
-    table() %>% 
-    sort(decreasing = TRUE) %>% 
-    .[. > 1]
-  table_results <- tibble(PMID = names(freqs), n = unname(freqs))
-  if (length(freqs) > 0) table_results else "There is not enough information to suggest any specific articles"
+refs_to_freqs <- function(pmid) {
+  # detect repeated PMIDs and obtain their frequency
+  freq <- sort(table(pmid), decreasing = TRUE)
+  freq <- freq[freq > 1]
+  table_results <- tibble(PMID = names(freq), n = unname(freq))
+  
+  if (length(freq) > 0) {
+    table_results
+  } else {
+    "There is not enough information to suggest any specific articles"
+  }
 }
 
 

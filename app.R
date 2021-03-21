@@ -4,7 +4,7 @@ source("functions.R")
 
 ui <- fluidPage(
   textInput("query", "Search"),
-  numericInput("limit", "Limit of articles", value = 50),
+  numericInput("limit", "Limit of articles", value = 100),
   numericInput("days_before", "Within the specified number of days", value = 365),
   actionButton("button_search", "Search!"),
   tableOutput("table")
