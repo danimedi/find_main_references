@@ -15,6 +15,13 @@ library(stringr)
 # 3. pmid_to_refs
 
 
+xml_extract <- function(response, xpath) {
+  # extract elements of a response of the API using xpaths
+  xml_text(xml_find_all(xml_contents(content(response)), xpath))
+}
+
+
+
 query_to_pmid <- function(query, limit = 100, days_before = 365) {
   # use RISmed package to obtain the PMIDs of the search query
   search_query <- EUtilsSummary(query, retmax = limit, reldate = days_before)
@@ -60,8 +67,9 @@ refs_to_freqs <- function(pmid) {
 
 pmid_to_article <- function(pmid) {
   # obtain the titles for the PMIDs
-  query <- paste0(pmid, collapse = "[PMID] OR ")
-  query <- paste0(query, "[PMID]")
-  ArticleTitle(EUtilsGet(query))
+  ids <- str_c(pmid, collapse = ",")
+  base <- "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
+  url <- str_c(base, "esummary.fcgi?db=pubmed&id=", ids)
+  output <- GET(url)
+  xml_extract(output, "//DocSum/Item[@Name='Title']")
 }
-
