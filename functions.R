@@ -1,8 +1,5 @@
-library(RISmed)
 library(httr)
-library(magrittr)
 library(xml2)
-library(tibble)
 library(stringr)
 
 
@@ -10,23 +7,44 @@ library(stringr)
 # expensive "base" functions:
 # EUtilsGet x2
 # expensive created functions:
-# 1. pmid_to_article
-# 2. query_to_pmid
+# 1. pmid_to_article (maybe fixed)
+# 2. query_to_pmid (maybe fixed)
 # 3. pmid_to_refs
 
 
-xml_extract <- function(response, xpath) {
+xml_extract_text <- function(response, xpath) {
   # extract elements of a response of the API using xpaths
   xml_text(xml_find_all(xml_contents(content(response)), xpath))
 }
 
+xml_extract_attrs <- function(response, xpath) {
+  unlist(
+    xml_attrs(xml_find_all(xml_contents(content(response)), xpath)), 
+    use.names = FALSE
+  )
+}
+
+create_query <- function(query) {
+  query <- curlPercentEncode(query)
+  query <- gsub("%20", "+", query)
+  query
+}
 
 
-query_to_pmid <- function(query, limit = 100, days_before = 365) {
-  # use RISmed package to obtain the PMIDs of the search query
-  search_query <- EUtilsSummary(query, retmax = limit, reldate = days_before)
-  medline_object <- EUtilsGet(search_query)
-  ArticleId(medline_object)
+
+query_to_pmid <- function(query, limit = 1000) {
+  # first translate the query (ESearch)
+  query <- create_query(query)
+  base <- "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
+  url <- str_c(base, "esearch.fcgi?db=pubmed&term=", query, "&usehistory=y")
+  output <- GET(url)
+  web <- xml_extract_text(output, "//WebEnv")
+  key <- xml_extract_text(output, "//QueryKey")
+  # then obtain the PMIDs
+  url <- str_c(base, "esummary.fcgi?db=pubmed&query_key=", key, "&WebEnv=", web, "&version=2.0",
+               "&retmax=", limit)
+  output <- GET(url)
+  xml_extract_attrs(output, "//DocumentSummarySet/DocumentSummary")
 }
 
 
@@ -41,10 +59,7 @@ pmid_to_refs <- function(pmid) {
     url_id
   )
   output <- GET(url)
-  res <- content(output) %>% 
-    xml_contents() %>% 
-    xml_find_all("//LinkSetDb/Link") %>% 
-    xml_text()
+  res <- xml_extract_text(output, "//LinkSetDb/Link")
   res
 }
 
@@ -69,7 +84,7 @@ pmid_to_article <- function(pmid) {
   # obtain the titles for the PMIDs
   ids <- str_c(pmid, collapse = ",")
   base <- "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
-  url <- str_c(base, "esummary.fcgi?db=pubmed&id=", ids)
+  url <- str_c(base, "esummary.fcgi?db=pubmed&id=", ids, "&version=2.0")
   output <- GET(url)
-  xml_extract(output, "//DocSum/Item[@Name='Title']")
+  xml_extract_text(output, "//DocumentSummarySet/DocumentSummary/Title")
 }
