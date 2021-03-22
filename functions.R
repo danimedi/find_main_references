@@ -1,6 +1,7 @@
 library(httr)
 library(xml2)
 library(stringr)
+library(RCurl)
 
 
 # analysis of perfomance showed:
