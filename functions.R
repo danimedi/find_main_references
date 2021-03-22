@@ -33,7 +33,8 @@ create_query <- function(query) {
 
 
 
-query_to_pmid <- function(query, limit = 1000) {
+# the URL does not support more than 335 PMIDs of the article
+query_to_pmid <- function(query, limit = 330) {
   # first translate the query (ESearch)
   query <- create_query(query)
   base <- "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
