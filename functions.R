@@ -4,15 +4,6 @@ library(stringr)
 library(RCurl)
 
 
-# analysis of perfomance showed:
-# expensive "base" functions:
-# EUtilsGet x2
-# expensive created functions:
-# 1. pmid_to_article (maybe fixed)
-# 2. query_to_pmid (maybe fixed)
-# 3. pmid_to_refs
-
-
 xml_extract_text <- function(response, xpath) {
   # extract elements of a response of the API using xpaths
   xml_text(xml_find_all(xml_contents(content(response)), xpath))
@@ -34,7 +25,7 @@ create_query <- function(query) {
 
 
 # the URL does not support more than 335 PMIDs of the article
-query_to_pmid <- function(query, limit = 330) {
+query_to_pmid <- function(query, limit = 1000) {
   # first translate the query (ESearch)
   query <- create_query(query)
   base <- "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
@@ -55,14 +46,21 @@ pmid_to_refs <- function(pmid) {
   # obtain the PMIDs of the references from a list of PMIDs
   base <- "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
   url_id <- str_c("&id=", str_c(pmid, collapse = "&id="))
-  url <- str_c(
-    base,
-    "elink.fcgi?dbfrom='pubmed'&linkname=pubmed_pubmed_refs",
-    url_id
-  )
-  output <- GET(url)
-  res <- xml_extract_text(output, "//LinkSetDb/Link")
-  res
+  
+  if (length(pmid) <= 300) {
+    url <- str_c(
+      base,
+      "elink.fcgi?dbfrom=pubmed&linkname=pubmed_pubmed_refs",
+      url_id
+    )
+    output <- GET(url)
+  } else {
+    output <- POST(
+      url = str_c(base, "elink.fcgi?"),
+      body = str_c("dbfrom=pubmed&linkname=pubmed_pubmed_refs", url_id)
+    )
+  }
+  xml_extract_text(output, "//LinkSetDb/Link")
 }
 
 
@@ -85,7 +83,15 @@ pmid_to_article <- function(pmid) {
   # obtain the titles for the PMIDs
   ids <- str_c(pmid, collapse = ",")
   base <- "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
-  url <- str_c(base, "esummary.fcgi?db=pubmed&id=", ids, "&version=2.0")
-  output <- GET(url)
+  if (pmid <= 300) {
+    url <- str_c(base, "esummary.fcgi?db=pubmed&id=", ids, "&version=2.0")
+    output <- GET(url)
+  } else {
+    output <- POST(
+      url = str_c(base, "esummary.fcgi?"),
+      body = str_c("dbfrom=pubmed&id=", ids, "&version=2.0")
+    )
+  }
   xml_extract_text(output, "//DocumentSummarySet/DocumentSummary/Title")
 }
+
