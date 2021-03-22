@@ -1,29 +1,35 @@
 library(shiny)
 library(shinycssloaders)
+library(tibble)
 
 source("functions.R")
 
 ui <- fluidPage(
   textInput("query", "Search"),
-  numericInput("limit", "Limit of articles", value = 100),
-  numericInput("days_before", "Within the specified number of days", value = 365),
   actionButton("button_search", "Search!"),
   tableOutput("table") %>% withSpinner()
 )
 
 server <- function(input, output, session) {
   
-  result <- eventReactive(input$button_search, {
-    input$query %>% 
-      query_to_pmid(limit = input$limit, days_before = input$days_before) %>% 
-      pmid_to_refs() %>%
-      refs_to_freqs()
-  })
+  # a list with the names and frequencies of the PMIDs of references
+  result <- eventReactive(input$button_search,
+    refs_to_freqs(pmid_to_refs(query_to_pmid(input$query, limit = 330)))
+  )
   
-  output$table <- renderTable({
-    tibble(result(), Article = pmid_to_article(result()$PMID),
-           Link = paste0("https://pubmed.ncbi.nlm.nih.gov/", PMID))
-  })
+  # obtain the columns for the names and link of the articles
+  article <- reactive(pmid_to_article(result()$PMID))
+  link <- reactive(str_c("https://pubmed.ncbi.nlm.nih.gov/", result()$PMID))
+  
+  # table with the results
+  output$table <- renderTable(
+    tibble(
+      PMID = result()$PMID,
+      n = result()$n,
+      Article = article(),
+      Link = link()
+    )
+  )
   
 }
 

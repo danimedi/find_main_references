@@ -71,10 +71,9 @@ refs_to_freqs <- function(pmid) {
   # detect repeated PMIDs and obtain their frequency
   freq <- sort(table(pmid), decreasing = TRUE)
   freq <- freq[freq > 1]
-  table_results <- tibble(PMID = names(freq), n = unname(freq))
-  
+  result <- list(PMID = names(freq), n = unname(freq))
   if (length(freq) > 0) {
-    table_results
+    result
   } else {
     validate("There is not enough information to suggest any specific articles")
   }
