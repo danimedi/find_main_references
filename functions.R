@@ -86,7 +86,7 @@ pmid_to_article <- function(pmid) {
   # obtain the titles for the PMIDs
   ids <- str_c(pmid, collapse = ",")
   base <- "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
-  if (pmid <= 300) {
+  if (length(pmid) <= 300) {
     url <- str_c(base, "esummary.fcgi?db=pubmed&id=", ids, "&version=2.0")
     output <- GET(url)
   } else {
