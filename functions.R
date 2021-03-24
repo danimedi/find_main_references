@@ -1,7 +1,6 @@
 library(httr)
 library(xml2)
 library(stringr)
-library(RCurl)
 
 
 xml_extract_text <- function(response, xpath) {
@@ -17,7 +16,7 @@ xml_extract_attrs <- function(response, xpath) {
 }
 
 create_query <- function(query) {
-  query <- curlPercentEncode(query)
+  query <- URLencode(enc2utf8(query), reserved = TRUE)
   query <- gsub("%20", "+", query)
   query
 }
