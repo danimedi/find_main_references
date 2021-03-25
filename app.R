@@ -13,7 +13,7 @@ ui <- fluidPage(
   sidebarLayout(
     sidebarPanel(
       textInput("query", "Search"),
-      numericInput("limit", "Limit of articles to search their references", value = 300),
+      numericInput("limit", "Limit of articles to search", value = 300),
       actionButton("button_search", "Search!"),
       tabsetPanel(
         id = "download_tabs",
@@ -21,8 +21,9 @@ ui <- fluidPage(
         tabPanel("panel_empty", ""),
         tabPanel("panel_download", 
           HTML("<br><br>"),
-          downloadButton("download_table", HTML("Table of most cited articles <br> as TSV")),
-          downloadButton("download_links", HTML("Text file with links of <br> most cited articles"))
+          HTML("<b>Download the most cited articles:</b><br>"),
+          downloadButton("download_table", HTML("Table as TSV")),
+          downloadButton("download_links", HTML("Text file with links"))
         )
       )
     ),
