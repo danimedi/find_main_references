@@ -25,6 +25,10 @@ The app follows the following steps:
     other interactions in the app and the app can also have some inputs
     to control different parameters of the process.
 
+All this process is realized by the different functions used in the app.
+The documentation of those functions is located in the individual
+scripts.
+
 ### Example
 
 This is an example of some of the steps in the process of retrieving

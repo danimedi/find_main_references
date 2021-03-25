@@ -28,6 +28,8 @@ The app follows the following steps:
 5. Obtain the titles of the articles from those PMIDs
 6. Finally the information obtained is used to generate tables and other interactions in the app and the app can also have some inputs to control different parameters of the process.
 
+All this process is realized by the different functions used in the app. The documentation of those functions is located in the individual scripts.
+
 ### Example
 
 This is an example of some of the steps in the process of retrieving information from a search query:
