@@ -1,7 +1,9 @@
 ---
 title: "Find main references"
 author: "Daniel Medina-Neira"
-output: "github_document"
+output: 
+  github_document:
+    html_preview: false
 ---
 
 ```{r setup, include=FALSE}
