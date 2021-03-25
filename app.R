@@ -11,7 +11,17 @@ ui <- fluidPage(
     sidebarPanel(
       textInput("query", "Search"),
       numericInput("limit", "Limit of articles to search their references", value = 300),
-      actionButton("button_search", "Search!")
+      actionButton("button_search", "Search!"),
+      tabsetPanel(
+        id = "download_tabs",
+        type = "hidden",
+        tabPanel("panel_empty", ""),
+        tabPanel("panel_download", 
+          HTML("<br><br>"),
+          downloadButton("download_bib", "References as a BIB file"),
+          downloadButton("download_links", "Links as a text file")
+        )
+      )
     ),
     mainPanel(
       tableOutput("table") %>% withSpinner()
@@ -31,7 +41,7 @@ server <- function(input, output, session) {
   link <- reactive(str_c("https://pubmed.ncbi.nlm.nih.gov/", result()$PMID))
   
   # table with the results
-  output$table <- renderTable(
+  table_res <- reactive(
     tibble(
       PMID = result()$PMID,
       n = result()$n,
@@ -39,6 +49,16 @@ server <- function(input, output, session) {
       Link = link()
     )
   )
+  output$table <- renderTable(table_res())
+  
+  # show download buttons when needed
+  observeEvent(table_res(), {
+    if (is_tibble(table_res())) {
+      updateTabsetPanel(inputId = "download_tabs", selected = "panel_download")
+    } else {
+      updateTabsetPanel(inputId = "download_tabs", selected = "panel_empty")
+    }
+  })
   
 }
 
