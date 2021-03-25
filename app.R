@@ -38,8 +38,12 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
   
+  # OBTAIN INFORMATION FROM THE API AND CREATE TABLES ------------------
+  
   # PMIDs from the initial search
-  pmid_art <- eventReactive(input$button_search, query_to_pmid(input$query, limit = input$limit))
+  pmid_art <- eventReactive(input$button_search, 
+    query_to_pmid(input$query, limit = input$limit)
+  )
   
   # obtain list containing titles and files from the searched articles
   link_title_art <- reactive(pmid_to_title_link(pmid_art()))
@@ -64,6 +68,8 @@ server <- function(input, output, session) {
     req(input$button_search)
     table_ref()
   })
+  
+  # DOWNLOAD BUTTONS -----------------------------------
   
   # show download buttons when needed
   observeEvent(table_ref(), {
