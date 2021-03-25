@@ -19,7 +19,8 @@ ui <- fluidPage(
         tabPanel("panel_empty", ""),
         tabPanel("panel_download", 
           HTML("<br><br>"),
-          downloadButton("download_links", "Download text file")
+          downloadButton("download_table", HTML("Table of most cited articles <br> as TSV")),
+          downloadButton("download_links", HTML("Text file with links of <br> most cited articles"))
         )
       )
     ),
@@ -90,7 +91,15 @@ server <- function(input, output, session) {
           validate("The number of articles is not the same as the links")
         }
       }
-      writeLines(join_link_title(names_ref(), links_ref()), file)
+      writeLines(join_link_title(link_title_ref()$Article, link_title_ref()$Link), file)
+    }
+  )
+  output$download_table <- downloadHandler(
+    filename = function() {
+      paste0(input$query, ".tsv")
+    },
+    content = function(file) {
+      write.table(table_ref(), sep = "\t", file = file, row.names = FALSE)
     }
   )
 }
