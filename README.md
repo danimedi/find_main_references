@@ -13,7 +13,7 @@ bases.
 
 The app follows the following steps:
 
-1.  Transform the search query into a query with terms used by pubmed.
+1.  Transform the search query into a query with terms used by PubMed.
 2.  Obtain the PMIDs from this new “improved” query (also extract
     information like the titles and links).
 3.  Obtain the references as PMIDs from these PMIDs of the searched
@@ -27,7 +27,7 @@ The app follows the following steps:
 
 ### Example
 
-This is an example of some of the steps in the process of retreiving
+This is an example of some of the steps in the process of retrieving
 information from a search query:
 
 ``` r

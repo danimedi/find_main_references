@@ -2,8 +2,10 @@ library(shiny)
 library(shinycssloaders)
 library(tibble)
 library(stringr)
+library(purrr)
 
-source("functions.R")
+# source the R files in the directory `www`
+walk(list.files("www", full.names = TRUE, pattern = "[.]R$"), source)
 
 ui <- fluidPage(
   titlePanel("Find the most cited articles"),
