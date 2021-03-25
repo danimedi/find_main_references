@@ -1,13 +1,10 @@
 library(shiny)
 library(shinycssloaders)
 library(tibble)
-library(shinythemes)
 
 source("functions.R")
 
 ui <- fluidPage(
-  theme = shinytheme("flatly"),
-  
   titlePanel("Find the most cited articles"),
   
   sidebarLayout(
@@ -17,7 +14,7 @@ ui <- fluidPage(
       actionButton("button_search", "Search!")
     ),
     mainPanel(
-      tableOutput("table") %>% withSpinner(color = "#3498db")
+      tableOutput("table") %>% withSpinner()
     )
   )
 )
