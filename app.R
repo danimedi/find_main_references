@@ -1,6 +1,7 @@
 library(shiny)
 library(shinycssloaders)
 library(tibble)
+library(stringr)
 
 source("functions.R")
 
@@ -18,8 +19,7 @@ ui <- fluidPage(
         tabPanel("panel_empty", ""),
         tabPanel("panel_download", 
           HTML("<br><br>"),
-          downloadButton("download_bib", "References as a BIB file"),
-          downloadButton("download_links", "Links as a text file")
+          downloadButton("download_links", "Download text file")
         )
       )
     ),
@@ -60,6 +60,29 @@ server <- function(input, output, session) {
     }
   })
   
+  # create the files to be downloaded
+  output$download_links <- downloadHandler(
+    filename = function() {
+      paste0(input$query, ".txt")
+    },
+    content = function(file) {
+      join_link_title <- function(title, link) {
+        if (length(title) == length(link)) {
+          paste0(
+            vapply(
+              seq_along(title),
+              function(i) paste0(title[[i]], "\n", link[[i]]),
+              character(1)
+            ),
+            collapse = "\n\n"
+          )
+        } else {
+          validate("The number of articles is not the same as the links")
+        }
+      }
+      writeLines(join_link_title(article(), link()), file)
+    }
+  )
 }
 
 shinyApp(ui, server)
