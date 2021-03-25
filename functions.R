@@ -92,7 +92,7 @@ pmid_to_article <- function(pmid) {
   } else {
     output <- POST(
       url = str_c(base, "esummary.fcgi?"),
-      body = str_c("dbfrom=pubmed&id=", ids, "&version=2.0")
+      body = str_c("db=pubmed&id=", ids, "&version=2.0")
     )
   }
   xml_extract_text(output, "//DocumentSummarySet/DocumentSummary/Title")
