@@ -98,3 +98,13 @@ pmid_to_article <- function(pmid) {
   xml_extract_text(output, "//DocumentSummarySet/DocumentSummary/Title")
 }
 
+
+
+pmid_to_title_link <- function(pmid) {
+  # create list with the titles and links of a character vector with PMIDs
+  list(
+    Article = pmid_to_article(pmid),
+    Link = str_c("https://pubmed.ncbi.nlm.nih.gov/", pmid)
+  )
+}
+
