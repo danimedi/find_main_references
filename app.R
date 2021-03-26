@@ -8,13 +8,21 @@ library(purrr)
 walk(list.files("www", full.names = TRUE, pattern = "[.]R$"), source)
 
 ui <- fluidPage(
+  
   titlePanel("Find the most cited articles"),
   
   sidebarLayout(
     sidebarPanel(
+      
+      # instructions
+      HTML(readLines("www/instructions.html")),
+      HTML("<br><br>"),
+      
       textInput("query", "Search"),
       numericInput("limit", "Limit of articles to search", value = 300),
       actionButton("button_search", "Search!"),
+      
+      # download buttons (hidden until needed)
       tabsetPanel(
         id = "download_tabs",
         type = "hidden",
@@ -26,6 +34,7 @@ ui <- fluidPage(
           downloadButton("download_links", HTML("Text file with links"))
         )
       )
+      
     ),
     mainPanel(
       tabsetPanel(
