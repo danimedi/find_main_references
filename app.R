@@ -1,11 +1,17 @@
 library(shiny)
 library(shinycssloaders)
+library(shinyhelper)
 library(tibble)
 library(stringr)
 library(purrr)
 
 # source the R files in the directory `www`
 walk(list.files("www", full.names = TRUE, pattern = "[.]R$"), source)
+
+# read HTML files
+readLines2 <- function(file) {
+  paste0(readLines(file), collapse = "")
+}
 
 ui <- fluidPage(
   
@@ -15,11 +21,22 @@ ui <- fluidPage(
     sidebarPanel(
       
       # instructions
-      HTML(readLines("www/instructions.html")),
+      HTML(readLines2("www/introduction.html")),
       HTML("<br><br>"),
       
-      textInput("query", "Search"),
-      numericInput("limit", "Limit of articles to search", value = 300),
+      # browser with a helper (question mark) with instructions
+      helper(
+        textInput("query", "Search"), 
+        type = "inline",
+        content = readLines2("www/help_search.html")
+      ),
+      
+      helper(
+        numericInput("limit", "Limit of articles to search", value = 300),
+        type = "inline",
+        content = readLines2("www/help_limit.html")
+      ),
+      
       actionButton("button_search", "Search!"),
       
       # download buttons (hidden until needed)
@@ -46,6 +63,9 @@ ui <- fluidPage(
 )
 
 server <- function(input, output, session) {
+  
+  # observe helpers (question marks)
+  observe_helpers()
   
   # OBTAIN INFORMATION FROM THE API AND CREATE TABLES ------------------
   
