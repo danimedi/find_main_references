@@ -22,13 +22,14 @@ ui <- fluidPage(
       
       # instructions
       HTML(readLines2("www/introduction.html")),
-      HTML("<br><br>"),
+      HTML("<br>"),
       
       # browser with a helper (question mark) with instructions
       helper(
         textInput("query", "Search"), 
         type = "inline",
-        content = readLines2("www/help_search.html")
+        content = readLines2("www/help_search.html"),
+        buttonLabel = "Ok"
       ),
       
       actionButton("button_search", "Search!"),
@@ -53,7 +54,13 @@ ui <- fluidPage(
         tabPanel("Searched articles", tableOutput("table_art") %>% withSpinner())
       )
     )
-  )
+  ),
+  
+  # link to the GitHub repository
+  HTML("<span style='position:fixed; bottom:10px; left:10px; opacity:0.9;'>
+       <a href='https://github.com/danimedi/find_main_references'>
+       GitHub repository
+       </a></span>")
 )
 
 server <- function(input, output, session) {
