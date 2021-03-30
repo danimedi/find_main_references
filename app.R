@@ -31,12 +31,6 @@ ui <- fluidPage(
         content = readLines2("www/help_search.html")
       ),
       
-      helper(
-        numericInput("limit", "Limit of articles to search", value = 300),
-        type = "inline",
-        content = readLines2("www/help_limit.html")
-      ),
-      
       actionButton("button_search", "Search!"),
       
       # download buttons (hidden until needed)
@@ -71,7 +65,7 @@ server <- function(input, output, session) {
   
   # PMIDs from the initial search
   pmid_art <- eventReactive(input$button_search, 
-    query_to_pmid(input$query, limit = input$limit)
+    query_to_pmid(input$query, limit = 300)
   )
   
   # obtain list containing titles and files from the searched articles
