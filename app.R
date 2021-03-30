@@ -57,10 +57,14 @@ ui <- fluidPage(
   ),
   
   # link to the GitHub repository
-  HTML("<span style='position:fixed; bottom:10px; left:10px; opacity:0.9;'>
-       <a href='https://github.com/danimedi/find_main_references'>
-       GitHub repository
-       </a></span>")
+  # HTML("<span style='position:fixed; bottom:10px; left:10px; opacity:0.9;'>
+  #      <a href='https://github.com/danimedi/find_main_references'>
+  #      GitHub repository
+  #      </a></span>"),
+  # HTML("<span style='position:fixed; top:10px; right:10px; opacity:0.7;'>
+  #      <a href='https://github.com/danimedi/find_main_references'>
+  #      <img src='www/github_logo.png'/>
+  #      </a></span>")
 )
 
 server <- function(input, output, session) {
