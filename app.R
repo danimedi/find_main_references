@@ -57,7 +57,7 @@ ui <- fluidPage(
   ),
   
   # link to the GitHub repository
-  HTML("<span style='position:fixed; top:10px; right:10px; opacity:0.4;'>
+  HTML("<span style='position:absolute; top:10px; right:10px; opacity:0.4;'>
        <a href='https://github.com/danimedi/find_main_references'>
        <img src='github_logo.jpg'/>
        </a></span>")
