@@ -14,6 +14,6 @@
 pmid_to_title_link <- function(pmid) {
   list(
     Article = pmid_to_article(pmid),
-    Link = str_c("https://pubmed.ncbi.nlm.nih.gov/", pmid)
+    Link = stringr::str_c("https://pubmed.ncbi.nlm.nih.gov/", pmid)
   )
 }
