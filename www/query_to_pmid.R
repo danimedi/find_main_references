@@ -14,13 +14,13 @@ query_to_pmid <- function(query, limit = 300) {
   # first translate the query (ESearch)
   query <- create_query(query)
   base <- "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
-  url <- stringr::str_c(base, "esearch.fcgi?db=pubmed&term=", query, "&usehistory=y")
-  output <- httr::GET(url)
-  web <- xml2::xml_extract_text(output, "//WebEnv")
-  key <- xml2::xml_extract_text(output, "//QueryKey")
+  url <- str_c(base, "esearch.fcgi?db=pubmed&term=", query, "&usehistory=y")
+  output <- GET(url)
+  web <- xml_extract_text(output, "//WebEnv")
+  key <- xml_extract_text(output, "//QueryKey")
   # then obtain the PMIDs
-  url <- stringr::str_c(base, "esummary.fcgi?db=pubmed&query_key=", key, "&WebEnv=", web, "&version=2.0",
+  url <- str_c(base, "esummary.fcgi?db=pubmed&query_key=", key, "&WebEnv=", web, "&version=2.0",
                "&retmax=", limit)
-  output <- httr::GET(url)
+  output <- GET(url)
   xml_extract_attrs(output, "//DocumentSummarySet/DocumentSummary")
 }

@@ -1,13 +1,13 @@
 
 # extract elements of a response of the API using xpaths
 xml_extract_text <- function(response, xpath) {
-  xml2::xml_text(xml2::xml_find_all(xml2::xml_contents(httr::content(response)), xpath))
+  xml_text(xml_find_all(xml_contents(content(response)), xpath))
 }
 
 # extract arguments of a response of the API using xpaths
 xml_extract_attrs <- function(response, xpath) {
   unlist(
-    xml2::xml_attrs(xml_find_all(xml2::xml_contents(httr::content(response)), xpath)), 
+    xml_attrs(xml_find_all(xml_contents(content(response)), xpath)), 
     use.names = FALSE
   )
 }

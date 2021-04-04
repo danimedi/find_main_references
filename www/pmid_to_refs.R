@@ -16,20 +16,20 @@ pmid_to_refs <- function(pmid) {
   # here we're using `"&id="` instead of commas, this is because that way you obtain
   # the references from artiles independently, otherwise the repeated articles would
   # collapse
-  url_id <- stringr::str_c("&id=", stringr::str_c(pmid, collapse = "&id="))
+  url_id <- str_c("&id=", str_c(pmid, collapse = "&id="))
   
   if (length(pmid) <= 300) {
-    url <- stringr::str_c(
+    url <- str_c(
       base,
       "elink.fcgi?dbfrom=pubmed&linkname=pubmed_pubmed_refs",
       url_id
     )
-    output <- httr::GET(url)
+    output <- GET(url)
   } else {
-    output <- httr::POST(
-      url = stringr::str_c(base, "elink.fcgi?"),
-      body = stringr::str_c("dbfrom=pubmed&linkname=pubmed_pubmed_refs", url_id)
+    output <- POST(
+      url = str_c(base, "elink.fcgi?"),
+      body = str_c("dbfrom=pubmed&linkname=pubmed_pubmed_refs", url_id)
     )
   }
-  xml2::xml_extract_text(output, "//LinkSet/LinkSetDb/Link")
+  xml_extract_text(output, "//LinkSet/LinkSetDb/Link")
 }

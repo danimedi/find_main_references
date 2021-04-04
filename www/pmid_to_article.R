@@ -10,16 +10,16 @@
 #' @examples
 #' 
 pmid_to_article <- function(pmid) {
-  ids <- stringr::str_c(pmid, collapse = ",")
+  ids <- str_c(pmid, collapse = ",")
   base <- "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
   if (length(pmid) <= 300) {
-    url <- stringr::str_c(base, "esummary.fcgi?db=pubmed&id=", ids, "&version=2.0")
-    output <- httr::GET(url)
+    url <- str_c(base, "esummary.fcgi?db=pubmed&id=", ids, "&version=2.0")
+    output <- GET(url)
   } else {
-    output <- httr::POST(
-      url = stringr::str_c(base, "esummary.fcgi?"),
-      body = stringr::str_c("db=pubmed&id=", ids, "&version=2.0")
+    output <- POST(
+      url = str_c(base, "esummary.fcgi?"),
+      body = str_c("db=pubmed&id=", ids, "&version=2.0")
     )
   }
-  xml2::xml_extract_text(output, "//DocumentSummarySet/DocumentSummary/Title")
+  xml_extract_text(output, "//DocumentSummarySet/DocumentSummary/Title")
 }
